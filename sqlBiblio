@@ -1,0 +1,78 @@
+# script créé le : Mon May 15 15:04:50 CEST 2023 -   syntaxe MySQL ;
+
+# use  VOTRE_BASE_DE_DONNEE ;
+
+DROP TABLE IF EXISTS Adherents ;
+CREATE TABLE Adherents (idAdherent int AUTO_INCREMENT NOT NULL,
+nomAdherent VARCHAR,
+adresseAdherent VARCHAR,
+naissanceAdherent DATE,
+PRIMARY KEY (idAdherent) ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Rayons ;
+CREATE TABLE Rayons (idRayon int AUTO_INCREMENT NOT NULL,
+nomRayon VARCHAR,
+themeRayon VARCHAR,
+PRIMARY KEY (idRayon) ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Auteurs ;
+CREATE TABLE Auteurs (idAuteur int AUTO_INCREMENT NOT NULL,
+nomAuteur VARCHAR,
+prenomAuteur VARCHAR,
+PRIMARY KEY (idAuteur) ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Ouvrages ;
+CREATE TABLE Ouvrages (idOuvrage int AUTO_INCREMENT NOT NULL,
+titreOuvrage VARCHAR,
+editionOuvrage VARCHAR,
+dateDeParution YEAR,
+idRayon INT,
+PRIMARY KEY (idOuvrage) ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS MotsClé ;
+CREATE TABLE MotsClé (idMotclé int AUTO_INCREMENT NOT NULL,
+mot VARCHAR,
+PRIMARY KEY (idMotclé) ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Exemplaires ;
+CREATE TABLE Exemplaires (idExemplaire int AUTO_INCREMENT NOT NULL,
+idOuvrage INT NOT NULL,
+idBiblio INT NOT NULL,
+PRIMARY KEY (idExemplaire) ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Bibliotheques ;
+CREATE TABLE Bibliotheques (idBiblio int AUTO_INCREMENT NOT NULL,
+nomBiblio VARCHAR,
+adresseBiblio VARCHAR,
+PRIMARY KEY (idBiblio) ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS Emprunter ;
+CREATE TABLE Emprunter (idAdherent int AUTO_INCREMENT NOT NULL,
+idExemplaire INT NOT NULL,
+dateEmprunts DATE,
+dateRetour DATE,
+PRIMARY KEY (idAdherent,
+ idExemplaire) ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS ecrire ;
+CREATE TABLE ecrire (idAuteur int AUTO_INCREMENT NOT NULL,
+idOuvrage INT NOT NULL,
+PRIMARY KEY (idAuteur,
+ idOuvrage) ) ENGINE=InnoDB;
+
+DROP TABLE IF EXISTS indexer ;
+CREATE TABLE indexer (idMotclé int AUTO_INCREMENT NOT NULL,
+idOuvrage INT NOT NULL,
+PRIMARY KEY (idMotclé,
+ idOuvrage) ) ENGINE=InnoDB;
+
+ALTER TABLE Ouvrages ADD CONSTRAINT FK_Ouvrages_idRayon FOREIGN KEY (idRayon) REFERENCES Rayons (idRayon);
+
+ALTER TABLE Exemplaires ADD CONSTRAINT FK_Exemplaires_idOuvrage FOREIGN KEY (idOuvrage) REFERENCES Ouvrages (idOuvrage);
+ALTER TABLE Exemplaires ADD CONSTRAINT FK_Exemplaires_idBiblio FOREIGN KEY (idBiblio) REFERENCES Bibliotheques (idBiblio);
+ALTER TABLE Emprunter ADD CONSTRAINT FK_Emprunter_idAdherent FOREIGN KEY (idAdherent) REFERENCES Adherents (idAdherent);
+ALTER TABLE Emprunter ADD CONSTRAINT FK_Emprunter_idExemplaire FOREIGN KEY (idExemplaire) REFERENCES Exemplaires (idExemplaire);
+ALTER TABLE ecrire ADD CONSTRAINT FK_ecrire_idAuteur FOREIGN KEY (idAuteur) REFERENCES Auteurs (idAuteur);
+ALTER TABLE ecrire ADD CONSTRAINT FK_ecrire_idOuvrage FOREIGN KEY (idOuvrage) REFERENCES Ouvrages (idOuvrage);
+ALTER TABLE indexer ADD CONSTRAINT FK_indexer_idMotclé FOREIGN KEY (idMotclé) REFERENCES MotsClé (idMotclé);
+ALTER TABLE indexer ADD CONSTRAINT FK_indexer_idOuvrage FOREIGN KEY (idOuvrage) REFERENCES Ouvrages (idOuvrage);
